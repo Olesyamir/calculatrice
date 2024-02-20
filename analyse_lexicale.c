@@ -153,7 +153,8 @@
                      break;   
                         case '/':
                         lexeme_en_cours.nature = DIV;
-                           etat =E_FIN;
+                        etat = E_FIN;
+                        break;
 		       		  default:
 						printf("Erreur_Lexicale") ;
 				 		exit(0) ;
