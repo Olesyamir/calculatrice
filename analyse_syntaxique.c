@@ -7,13 +7,30 @@
 #include "analyse_lexicale.h"
 
 
+int evaluer(int vald, Nature_Lexeme op, int valg){
+    switch (op){
+    case PLUS:
+        return vald + valg;
+    case MOINS:
+        return vald - valg;
+    case MUL:
+        return vald * valg;
+    case DIV:
+        return vald / valg;
+    default:
+        printf("Erreur operateur");
+        exit(0);
+        break;
+    }
+}
+
 // Rec_op =
 // selon LC().nature
 // cas PLUS, MUL, MOINS : Avancer
 // autre : Erreur
 // fin
 
-void rec_op(){
+void rec_op(Nature_Lexeme *op){
     Lexeme LC = lexeme_courant();
 
     switch (LC.nature){
@@ -21,6 +38,7 @@ void rec_op(){
     case MUL:
     case MOINS:
     case DIV:
+        *op = LC.nature;
         avancer();
         break;
     default:
@@ -39,20 +57,23 @@ void rec_op(){
 // autre : Erreur
 // fin
 
-void rec_eaep(){
+void rec_eaep(int *valeur){
     Lexeme LC = lexeme_courant();
+	int valg, vald;
+    Nature_Lexeme op;
 
     switch (LC.nature){
         case ENTIER:
+            *valeur = LC.valeur;
             avancer();
             break;
 
         case PARO_lex:
-            avancer(); //
-            rec_eaep();
-            rec_op();
-            rec_eaep();
-
+            avancer(); 
+            rec_eaep(&valg);
+            rec_op(&op);
+            rec_eaep(&vald);
+            *valeur = evaluer(valg, op, vald);
             Lexeme LC = lexeme_courant();
 
             if (LC.nature == PARF_lex){
@@ -66,16 +87,15 @@ void rec_eaep(){
             break;
         // autre : Erreur
         default:
-            printf("Erreur syntaxique - def");
+            printf("Erreur syntaxique");
             exit(0);
         }
 }
 
 
-
-void analyser(char *nom_fichier) {
+void analyser(char *nom_fichier, int *resultat) {
     demarrer(nom_fichier);
-    rec_eaep();
+    rec_eaep(resultat);
     if (lexeme_courant().nature != FIN_SEQUENCE) {
         printf("Erreur syntaxique");
         exit(0);
