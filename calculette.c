@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "analyse_syntaxique.h"
 
+
 int main (int argc, char *argv[]) {
     int *resultat = malloc(sizeof(int));
     switch (argc) {
